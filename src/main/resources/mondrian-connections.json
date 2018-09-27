@@ -1,19 +1,28 @@
 {
-	"test" : {
-		"JdbcDriver" : "org.hsqldb.jdbc.JDBCDriver",
-		"Jdbc" : "jdbc:hsqldb:res:test",
-		"Catalog" : "/test.xml",
-		"Description" : "Main version of test connection",
-		"UnrecognizedProperty" : "foobar",
+	"geofoodmart" : {
+		"JdbcDriver" : "org.postgis.DriverWrapper",
+		"Jdbc" : "jdbc:postgresql_postGIS://localhost:5432/foodmart",
+		"JdbcUser" : "postgres",
+		"JdbcPassword" : "18925",
+		"Catalog" : "/simple_geofoodmart.xml",
+		"Description" : "geofoodmart",
 		"IsDemo" : true
 	},
-	"foodmart" : {
-		"JdbcDriver" : "org.hsqldb.jdbc.JDBCDriver",
-		"Jdbc" : "jdbc:hsqldb:res:foodmart;set schema \"foodmart\"",
-		"JdbcUser" : "FOODMART",
-		"JdbcPassword" : "FOODMART",
-		"Catalog" : "https://raw.githubusercontent.com/pentaho/mondrian/lagunitas/demo/FoodMart.mondrian.xml",
-		"Description" : "Pentaho/Hyde FoodMart Database",
+	"realestate" : {
+		"JdbcDriver" : "org.postgis.DriverWrapper",
+		"Jdbc" : "jdbc:postgresql_postGIS://localhost:5432/real_estate",
+		"JdbcUser" : "postgres",
+		"JdbcPassword" : "18925",
+		"Catalog" : "/RealEstate.xml",
+		"Description" : "real_estate",
+		"IsDemo" : true
+	},
+	"marmot" : {
+		"JdbcDriver" : "triton.jdbc.driver.TritonDriver",
+		"Jdbc" : "jdbc:triton://192.168.0.23:9797/test?Unicode=true&characterEncoding=euckr",
+		"Catalog" : "/RealEstate.xml",
+		"Description" : "real_estate",
 		"IsDemo" : true
 	}
 }
+

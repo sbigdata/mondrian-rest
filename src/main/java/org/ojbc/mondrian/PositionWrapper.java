@@ -16,12 +16,13 @@
  */
 package org.ojbc.mondrian;
 
+import org.olap4j.Position;
+import org.olap4j.metadata.Member;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.olap4j.Position;
-import org.olap4j.metadata.Member;
+import java.util.Locale;
 
 /**
  * A wrapper around Mondrian Position objects, suitable for serialization via json.
@@ -44,10 +45,12 @@ public class PositionWrapper {
 		memberDimensionCaptions = new ArrayList<>();
 		memberDimensionValues = new ArrayList<>();
 		memberLevelNames = new ArrayList<>();
-		
+
+		Locale locale = null;
+
 		for (Member member : position.getMembers()) {
 			memberDimensionNames.add(member.getDimension().getName());
-			memberDimensionCaptions.add(member.getDimension().getCaption());
+			memberDimensionCaptions.add(member.getDimension().getCaption(locale));
 			memberDimensionValues.add(member.getName());
 			memberLevelNames.add(member.getLevel().getUniqueName());
 		}

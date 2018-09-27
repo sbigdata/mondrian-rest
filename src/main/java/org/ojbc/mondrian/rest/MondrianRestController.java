@@ -16,14 +16,9 @@
  */
 package org.ojbc.mondrian.rest;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ehcache.Cache;
@@ -43,229 +38,234 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * REST API for interacting with Mondrian.
- *
  */
+
+@CrossOrigin(origins = "*")
 @RestController
+
 public class MondrianRestController {
-	
-	private final Log log = LogFactory.getLog(MondrianRestController.class);
-	private MondrianConnectionFactory connectionFactory;
-	private Cache<Integer, CellSetWrapperType> queryCache;
-	
-   	@Resource(name="${requestAuthorizerBeanName}")
-	private RequestAuthorizer requestAuthorizer;
-   	
-	@Value("${removeDemoConnections}")
-	private boolean removeDemoConnections;
-	
-	@PostConstruct
-	public void init() throws IOException {
-		connectionFactory = new MondrianConnectionFactory();
-		connectionFactory.init(removeDemoConnections);
-		Configuration cacheConfig = new XmlConfiguration(getClass().getResource("/ehcache-config.xml")); 
-		CacheManager cacheManager = CacheManagerBuilder.newCacheManager(cacheConfig);
-		cacheManager.init();
-		queryCache = cacheManager.getCache("query-cache", Integer.class, CellSetWrapperType.class);
-		log.info("Successfully registered request authorizer class "
-				+ requestAuthorizer.getClass().getName());
-	}
-	
-	/**
-	 * Get all the connections available to this instance of the API
-	 * @return json string with connection information
-	 * @throws Exception
-	 */
-	@RequestMapping(value="/getConnections", method=RequestMethod.GET, produces="application/json")
-	public String getConnections() throws Exception {
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.addMixIn(MondrianConnectionFactory.MondrianConnection.class, SchemaContentHidingMixIn.class);
-		return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(connectionFactory.getConnections());
-	}
-	
-	/**
-	 * Get the Mondrian schema XML for the specified connection.  Sets HTTP Status of 500 if the specified connection does not exist.
-	 * @param connectionName the connection to search for
-	 * @return the specified connection's Mondrian schema (as XML), or null if not found
-	 * @throws Exception
-	 */
-	@RequestMapping(value="/getSchema", method=RequestMethod.GET, produces="application/xml")
-	public ResponseEntity<String> getSchema(String connectionName) throws Exception {
-		
-		String body = null;
-		HttpStatus status = HttpStatus.OK;
-		
-		MondrianConnectionFactory.MondrianConnection connection = connectionFactory.getConnections().get(connectionName);
-		if (connection == null) {
-			log.warn("Attempt to retrieve schema for connection that does not exist: " + connectionName);
-			status = HttpStatus.NOT_FOUND;
-		} else {
-			log.info("Retrieving schema content for connection " + connectionName);
-			String schemaContent = connection.getMondrianSchemaContent();
-			body = schemaContent.replace("\\n", "\n");
-		}
-		
-		return new ResponseEntity<String>(body, status);
-		
-	}
-	
-	/**
-	 * Flush the query cache
-	 */
-	@RequestMapping(value="/flushCache", method=RequestMethod.GET)
-	public ResponseEntity<Void> flushCache() {
-		queryCache.clear();
-		log.info("Query cache flushed");
-		return new ResponseEntity<Void>(HttpStatus.OK);
-	}
-	
-	/**
-	 * Submit the specified MDX query to the specified Mondrian connection.  Sets HTTP Status of 500 if the specified connection does not exist or if the query syntax is invalid.
-	 * @param queryRequest the query request (specifies the connection, by name, and the MDX query string)
-	 * @return json string containing the resulting CellSet, or null if no results
-	 * @throws Exception
-	 */
-	@RequestMapping(value="/query", method=RequestMethod.POST, produces="application/json", consumes="application/json")
-	public ResponseEntity<String> query(@RequestBody QueryRequest queryRequest, HttpServletRequest request) throws Exception {
-		
-		RequestAuthorizer.RequestAuthorizationStatus authorizationStatus = requestAuthorizer.authorizeRequest(request, queryRequest);
-		
-		if (authorizationStatus.authorized) {
 
-			boolean tidy = false;
-			boolean simplifyNames = false;
-			String body = null;
-			HttpStatus status = HttpStatus.OK;
-			HttpHeaders responseHeaders = new HttpHeaders();
+    private final Log log = LogFactory.getLog(MondrianRestController.class);
+    private MondrianConnectionFactory connectionFactory;
+    private Cache<Integer, CellSetWrapperType> queryCache;
 
-			String connectionName = queryRequest.getConnectionName();
+    @Resource(name = "${requestAuthorizerBeanName}")
+    private RequestAuthorizer requestAuthorizer;
 
-			Map<String, String> levelNameTranslationMap = null;
-			QueryRequest.TidyConfig tidyConfig = queryRequest.getTidy();
-			if (tidyConfig != null) {
-				tidy = tidyConfig.isEnabled();
-				simplifyNames = tidyConfig.isSimplifyNames();
-				levelNameTranslationMap = tidyConfig.getLevelNameTranslationMap();
-				if (simplifyNames && !tidy) {
-					log.warn(
-							"Request for simplification of names, but tidy is false.  No simplification is performed on raw CellSetWrappers.");
-				}
-			}
+    @Value("${removeDemoConnections}")
+    private boolean removeDemoConnections;
 
-			MondrianConnectionFactory.MondrianConnection connection = connectionFactory.getConnections()
-					.get(connectionName);
-			ObjectMapper mapper = new ObjectMapper();
+    @PostConstruct
+    public void init() throws IOException {
+        connectionFactory = new MondrianConnectionFactory();
+        connectionFactory.init(removeDemoConnections);
+        Configuration cacheConfig = new XmlConfiguration(getClass().getResource("/ehcache-config.xml"));
+        CacheManager cacheManager = CacheManagerBuilder.newCacheManager(cacheConfig);
+        cacheManager.init();
+        queryCache = cacheManager.getCache("query-cache", Integer.class, CellSetWrapperType.class);
+        log.info("Successfully registered request authorizer class "
+                + requestAuthorizer.getClass().getName());
+    }
 
-			if (connection == null) {
+    /**
+     * Get all the connections available to this instance of the API
+     *
+     * @return json string with connection information
+     * @throws Exception
+     */
+    @RequestMapping(value = "/getConnections", method = RequestMethod.GET, produces = "application/json")
+    public String getConnections() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.addMixIn(MondrianConnectionFactory.MondrianConnection.class, SchemaContentHidingMixIn.class);
+        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(connectionFactory.getConnections());
+    }
 
-				String missingConnectionErrorMessage = "Query submitted for connection that does not exist: " + connectionName;
-				log.warn(missingConnectionErrorMessage);
-				status = HttpStatus.NOT_FOUND;
-				body = "{\"message\" : \"" + missingConnectionErrorMessage + "\"}";
+    /**
+     * Get the Mondrian schema XML for the specified connection.  Sets HTTP Status of 500 if the specified connection does not exist.
+     *
+     * @param connectionName the connection to search for
+     * @return the specified connection's Mondrian schema (as XML), or null if not found
+     * @throws Exception
+     */
+    @RequestMapping(value = "/getSchema", method = RequestMethod.GET, produces = "application/xml")
+    public ResponseEntity<String> getSchema(String connectionName) throws Exception {
 
-			} else {
+        String body = null;
+        HttpStatus status = HttpStatus.OK;
 
-				String query = queryRequest.getQuery();
-				String mondrianRoleName = authorizationStatus.mondrianRole;
-				queryRequest.setMondrianRole(mondrianRoleName);
+        MondrianConnectionFactory.MondrianConnection connection = connectionFactory.getConnections().get(connectionName);
+        if (connection == null) {
+            log.warn("Attempt to retrieve schema for connection that does not exist: " + connectionName);
+            status = HttpStatus.NOT_FOUND;
+        } else {
+            log.info("Retrieving schema content for connection " + connectionName);
+            String schemaContent = connection.getMondrianSchemaContent();
+            body = schemaContent.replace("\\n", "\n");
+        }
 
-				log.info("Token " + authorizationStatus.token + " with role " + mondrianRoleName +
-						" executing query on connection " + connectionName + " with tidy=" + tidy + ": " + query);
+        return new ResponseEntity<String>(body, status);
 
-				CellSetWrapperType outputObject = null;
-				boolean querySucceeded = false;
+    }
 
-				int cacheKey = queryRequest.getCacheKey();
+    /**
+     * Flush the query cache
+     */
+    @RequestMapping(value = "/flushCache", method = RequestMethod.GET)
+    public ResponseEntity<Void> flushCache() {
+        queryCache.clear();
+        log.info("Query cache flushed");
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
 
-				if (queryCache.containsKey(cacheKey)) {
+    /**
+     * Submit the specified MDX query to the specified Mondrian connection.  Sets HTTP Status of 500 if the specified connection does not exist or if the query syntax is invalid.
+     *
+     * @param queryRequest the query request (specifies the connection, by name, and the MDX query string)
+     * @return json string containing the resulting CellSet, or null if no results
+     * @throws Exception
+     */
+    @RequestMapping(value = "/query", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    public ResponseEntity<String> query(@RequestBody QueryRequest queryRequest, HttpServletRequest request) throws Exception {
 
-					outputObject = queryCache.get(cacheKey);
-					responseHeaders.add("mondrian-rest-cached-result", "true");
-					log.info("Retrieved query result from cache");
-					querySucceeded = true;
+        RequestAuthorizer.RequestAuthorizationStatus authorizationStatus = requestAuthorizer.authorizeRequest(request, queryRequest);
 
-				} else {
+        if (authorizationStatus.authorized) {
 
-					OlapConnection olapConnection = connection.getOlap4jConnection().unwrap(OlapConnection.class);
-					try {
-						if (mondrianRoleName != null) {
-							olapConnection.setRoleName(mondrianRoleName);
-						}
-						OlapStatement statement = olapConnection.createStatement();
-						try {
-							CellSet cellSet = statement.executeOlapQuery(query);
-							log.debug("Query succeeded");
-							if (tidy) {
-								TidyCellSetWrapper tcc = new TidyCellSetWrapper();
-								tcc.init(cellSet, simplifyNames, levelNameTranslationMap);
-								outputObject = tcc;
-							} else {
-								outputObject = new CellSetWrapper(cellSet);
-							}
-							queryCache.put(cacheKey, outputObject);
-							querySucceeded = true;
-						} catch (OlapException oe) {
-							log.warn("OlapException occurred processing query.  Stack trace follows (if debug logging).");
-							log.debug("Stack trace: ", oe);
-							Map<String, String> errorBodyMap = new HashMap<>();
-							errorBodyMap.put("reason", oe.getMessage());
-							Throwable rootCause = oe;
-							Throwable nextCause = oe.getCause();
-							while (nextCause != null) {
-								rootCause = nextCause;
-								nextCause = rootCause.getCause();
-							}
-							errorBodyMap.put("rootCauseReason", rootCause.getMessage());
-							errorBodyMap.put("SQLState", oe.getSQLState());
-							log.warn("Exception root cause: " + rootCause.getMessage());
-							body = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(errorBodyMap);
-							status = HttpStatus.valueOf(500);
-						} finally {
-							statement.close();
-						}
-					} finally {
-						olapConnection.close();
-					}
+            boolean tidy = false;
+            boolean simplifyNames = false;
+            String body = null;
+            HttpStatus status = HttpStatus.OK;
+            HttpHeaders responseHeaders = new HttpHeaders();
 
-				}
+            String connectionName = queryRequest.getConnectionName();
 
-				if (querySucceeded) {
-					body = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(outputObject);
-				}
+            Map<String, String> levelNameTranslationMap = null;
+            QueryRequest.TidyConfig tidyConfig = queryRequest.getTidy();
+            if (tidyConfig != null) {
+                tidy = tidyConfig.isEnabled();
+                simplifyNames = tidyConfig.isSimplifyNames();
+                levelNameTranslationMap = tidyConfig.getLevelNameTranslationMap();
+                if (simplifyNames && !tidy) {
+                    log.warn(
+                            "Request for simplification of names, but tidy is false.  No simplification is performed on raw CellSetWrappers.");
+                }
+            }
 
-			}
+            MondrianConnectionFactory.MondrianConnection connection = connectionFactory.getConnections()
+                    .get(connectionName);
+            ObjectMapper mapper = new ObjectMapper();
 
-			return new ResponseEntity<String>(body, responseHeaders, status);
+            if (connection == null) {
 
-		} else {
-			
-			log.warn(authorizationStatus.message);
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-			
-		}
-		
-	}
-	
-	static final class SchemaContentHidingMixIn {
-		@JsonIgnore
-		@JsonProperty("MondrianSchemaContent")
-		public String getMondrianSchemaContent() {
-			return null;
-		}
-	}
+                String missingConnectionErrorMessage = "Query submitted for connection that does not exist: " + connectionName;
+                log.warn(missingConnectionErrorMessage);
+                status = HttpStatus.NOT_FOUND;
+                body = "{\"message\" : \"" + missingConnectionErrorMessage + "\"}";
 
-	public void setRemoveDemoConnections(boolean removeDemoConnections) {
-		this.removeDemoConnections = removeDemoConnections;
-	}
+            } else {
+
+                String query = queryRequest.getQuery();
+                String mondrianRoleName = authorizationStatus.mondrianRole;
+                queryRequest.setMondrianRole(mondrianRoleName);
+
+                log.info("Token " + authorizationStatus.token + " with role " + mondrianRoleName +
+                        " executing query on connection " + connectionName + " with tidy=" + tidy + ": " + query);
+
+                CellSetWrapperType outputObject = null;
+                boolean querySucceeded = false;
+
+                int cacheKey = queryRequest.getCacheKey();
+
+                if (queryCache.containsKey(cacheKey)) {
+
+                    outputObject = queryCache.get(cacheKey);
+                    responseHeaders.add("mondrian-rest-cached-result", "true");
+                    log.info("Retrieved query result from cache");
+                    querySucceeded = true;
+
+                } else {
+
+                    OlapConnection olapConnection = connection.getOlap4jConnection().unwrap(OlapConnection.class);
+                    try {
+                        if (mondrianRoleName != null) {
+                            olapConnection.setRoleName(mondrianRoleName);
+                        }
+                        OlapStatement statement = olapConnection.createStatement();
+                        try {
+                            CellSet cellSet = statement.executeOlapQuery(query);
+                            log.debug("Query succeeded");
+                            if (tidy) {
+                                TidyCellSetWrapper tcc = new TidyCellSetWrapper();
+                                tcc.init(cellSet, simplifyNames, levelNameTranslationMap);
+                                outputObject = tcc;
+                            } else {
+                                outputObject = new CellSetWrapper(cellSet);
+                            }
+                            queryCache.put(cacheKey, outputObject);
+                            querySucceeded = true;
+                        } catch (OlapException oe) {
+                            log.warn("OlapException occurred processing query.  Stack trace follows (if debug logging).");
+                            log.debug("Stack trace: ", oe);
+                            Map<String, String> errorBodyMap = new HashMap<>();
+                            errorBodyMap.put("reason", oe.getMessage());
+                            Throwable rootCause = oe;
+                            Throwable nextCause = oe.getCause();
+                            while (nextCause != null) {
+                                rootCause = nextCause;
+                                nextCause = rootCause.getCause();
+                            }
+                            errorBodyMap.put("rootCauseReason", rootCause.getMessage());
+                            errorBodyMap.put("SQLState", oe.getSQLState());
+                            log.warn("Exception root cause: " + rootCause.getMessage());
+                            body = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(errorBodyMap);
+                            status = HttpStatus.valueOf(500);
+                        } finally {
+                            statement.close();
+                        }
+                    } finally {
+                        olapConnection.close();
+                    }
+
+                }
+
+                if (querySucceeded) {
+                    body = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(outputObject);
+                }
+
+            }
+
+            return new ResponseEntity<String>(body, responseHeaders, status);
+
+        } else {
+
+            log.warn(authorizationStatus.message);
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
+        }
+
+    }
+
+    static final class SchemaContentHidingMixIn {
+        @JsonIgnore
+        @JsonProperty("MondrianSchemaContent")
+        public String getMondrianSchemaContent() {
+            return null;
+        }
+    }
+
+    public void setRemoveDemoConnections(boolean removeDemoConnections) {
+        this.removeDemoConnections = removeDemoConnections;
+    }
 
 }

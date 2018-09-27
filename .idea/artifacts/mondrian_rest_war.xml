@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="mondrian-rest:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="mondrian-rest.war">
+      <element id="artifact" artifact-name="mondrian-rest:war exploded" />
+    </root>
+  </artifact>
+</component>

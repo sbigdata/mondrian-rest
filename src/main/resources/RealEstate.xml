@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!-- Is it okay to use same leftKey name and rightKey name? 원본에는_fk 붙어있음.-->
+<Schema name="Korea_real_estate_deal">
+<Cube name="Deals" defaultMeasure="Unit Sales">
+        <Table name="deal"/>
+        <Dimension name="Estate" foreignKey="estate_id">
+                <Hierarchy hasAll="true" primaryKey="estate_id" primaryKeyTable="estate">
+                        <Join leftKey="emd_code" rightKey="emd_code" rightAlias="emdgeo">
+                                <Table name="estate" />
+                                <Join leftKey="sig_code" rightKey="sig_code" rightAlias="siggeo">
+                                        <Table name="emdgeo" />
+                                        <Join leftKey = "sd_code" rightKey="sd_code" >
+                                                <Table name="siggeo" />
+                                                <Table name="sdgeo" />
+                                        </Join>
+                                </Join>
+                        </Join>
+                        <Level name="SD" table="sdgeo" column="sd_kor_nam" uniqueMembers="true">
+                                <Property name="geom" column="geom" type="Geometry" />
+                                <Property name="sd_eng_nam" column="sd_eng_nam" type="String" />
+                        </Level>
+                        <Level name="SIG" table="siggeo" column="sig_kor_na" uniqueMembers="false">
+                                <Property name="geom" column="geom" type="Geometry" />
+                                <Property name="sig_eng_na" column="sig_eng_na" type="String" />
+                        </Level>
+                        <Level name="EMD" table="emdgeo" column="emd_kor_na" uniqueMembers="false">
+                                <Property name="geom" column="geom" type="Geometry" />
+                                <Property name="emd_eng_na" column="emd_eng_na" type="String" />
+                        </Level>
+                        <Level name = "Name" table="estate" column="name" uniqueMembers="false">
+                                <Property name="street_name" column="street" type="String" />
+                                <Property name="building_type" column="type" type="String" />
+                                <Property name="address" column="address" type="String" />	
+                                <Property name="built_year" column="built_year" type="Numeric" />
+                                <Property name="geocode" column="geocode" type="String" />
+                        </Level>
+                </Hierarchy>
+        </Dimension>
+        <Dimension name ="Time" type="TimeDimension" foreignKey="time_id">
+                <Hierarchy hasAll="false" primaryKey="time_id">
+                        <Table name="time" />
+                        <Level name="Year" column="year" type="Numeric" uniqueMembers="false" levelType="TimeYears" />
+                        <Level name="Quarter" column="quarter" uniqueMembers="false" levelType="TimeQuarters" />
+                        <Level name="Month" column="month" uniqueMembers="false" levelType="TimeMonths" />
+                        <Level name="Week" column="week" uniqueMembers="false" levelType="TimeWeeks" />
+                </Hierarchy>
+        </Dimension>
+        <Measure name="Price" column="price" aggregator="avg" formatString="Standard"/>
+        <Measure name="Deposit" column="deposit" aggregator="avg" formatString="Standard"/>
+        <Measure name="Mon_fee" column="mon_fee" aggregator="avg" formatString="Standard"/>
+</Cube>
+</Schema>

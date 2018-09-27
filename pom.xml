@@ -36,6 +36,7 @@
 		<pentaho-version>4.4-SNAPSHOT</pentaho-version>
 		<foodmart-hsqldb-version>0.4</foodmart-hsqldb-version>
 		<mockito-version>1.10.19</mockito-version>
+		<project.lib.path>D:\github\rest-mondrian\lib</project.lib.path>
 	</properties>
 
 	<dependencies>
@@ -62,37 +63,824 @@
 			<scope>provided</scope>
 		</dependency>
 
+
 		<dependency>
-			<groupId>pentaho</groupId>
-			<artifactId>mondrian</artifactId>
-			<version>${pentaho-version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.servlet</groupId>
-					<artifactId>servlet-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>javax.servlet</groupId>
-					<artifactId>jsp-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<artifactId>xml-apis</artifactId>
-					<groupId>xml-apis</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>xercesImpl</artifactId>
-					<groupId>xerces</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>xalan</artifactId>
-					<groupId>xalan</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>dom4j</artifactId>
-					<groupId>dom4j</groupId>
-				</exclusion>
-			</exclusions>
+
+		<groupId>org.springframework.boot</groupId>
+
+		<artifactId>spring-boot-starter-data-jpa</artifactId>
+
+	</dependency>
+
+		<dependency>
+
+		<groupId>org.springframework.boot</groupId>
+
+		<artifactId>spring-boot-starter-data-rest</artifactId>
+
+	</dependency>
+
+
+		<!-- 새로추가 -->
+		<dependency>
+			<groupId>com.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/activation.jar</systemPath>
 		</dependency>
+
+		<dependency>
+			<groupId>com.avalon</groupId>
+			<artifactId>avalon</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/avalon-framework-cvs-20020806.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.triton</groupId>
+			<artifactId>triton</artifactId>
+			<version>0.9</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/triton.jdbc.driver-0.9-all.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.marmot</groupId>
+			<artifactId>marmot</artifactId>
+			<version>0.9</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/marmot.sample-1.2.0.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.batik</groupId>
+			<artifactId>batik</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/batik.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.commonsbeanutils</groupId>
+			<artifactId>commonsbeanutils</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/commons-beanutils-1.6.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.commonscollections</groupId>
+			<artifactId>commonscollections</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/commons-collections-3.1.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.commonsdbcp</groupId>
+			<artifactId>commonsdbcp</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/commons-dbcp-1.2.1.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.commonsdigester</groupId>
+			<artifactId>commonsdigester</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/commons-digester-1.5.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.commonsfileupload</groupId>
+			<artifactId>commonsfileupload</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/commons-fileupload-1.0.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.commonslogging</groupId>
+			<artifactId>commonslogging</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/commons-logging-1.0.4.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.commonsmath</groupId>
+			<artifactId>commonsmath</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/commons-math-1.0.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.commonspool</groupId>
+			<artifactId>commonspool</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/commons-pool-1.2.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.commonsvfs</groupId>
+			<artifactId>commonsvfs</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/commons-vfs.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.derby</groupId>
+			<artifactId>derby</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/derby.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/dom4j.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.eigenbaseproperties</groupId>
+			<artifactId>eigenbaseproperties</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/eigenbase-properties.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.eigenbaseresgen</groupId>
+			<artifactId>eigenbaseresgen</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/eigenbase-resgen.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.eigenbasexom</groupId>
+			<artifactId>eigenbasexom</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/eigenbase-xom.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fop</groupId>
+			<artifactId>fop</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/fop.jar</systemPath>
+		</dependency>
+
+		<!--<dependency>-->
+			<!--<groupId>groovy</groupId>-->
+			<!--<artifactId>groovy</artifactId>-->
+			<!--<version>1.1-beta-2</version>-->
+		<!--</dependency>-->
+
+		<dependency>
+			<groupId>com.gtapi</groupId>
+			<artifactId>gtapi</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/gt-api-2.7.2.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.gt-epsg-wkt</groupId>
+			<artifactId>gt-epsg-wkt</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/gt-epsg-wkt-2.7.2.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.gt-main</groupId>
+			<artifactId>gt-main</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/gt-main-2.7.2.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.gt-metadata</groupId>
+			<artifactId>gt-metadata</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/gt-metadata-2.7.2.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.gt-opengis</groupId>
+			<artifactId>gt-opengis</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/gt-opengis-2.7.2.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.gt-referencing</groupId>
+			<artifactId>gt-referencing</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/gt-referencing-2.7.2.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jai_codec</groupId>
+			<artifactId>jai_codec</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/jai_codec.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jai_core</groupId>
+			<artifactId>jai_core</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/jai_core.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jakarta-regexp</groupId>
+			<artifactId>jakarta-regexp</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/jakarta-regexp-1.2.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.javacup</groupId>
+			<artifactId>javacup</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/javacup.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jaxen-full</groupId>
+			<artifactId>jaxen-full</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/jaxen-full.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jcommon</groupId>
+			<artifactId>jcommon</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/jcommon-1.0.0.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jdom</groupId>
+			<artifactId>jdom</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/jdom-1.0.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jfreechart</groupId>
+			<artifactId>jfreechart</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/jfreechart-1.0.0.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jpivot</groupId>
+			<artifactId>jpivot</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/jpivot.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jsf-api</groupId>
+			<artifactId>jsf-api</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/jsf-api.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jsr</groupId>
+			<artifactId>jsr</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/jsr-275-1.0-beta-2.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/jstl.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jts</groupId>
+			<artifactId>jts</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/jts-1.10.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/junit.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.p6spy</groupId>
+			<artifactId>p6spy</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/p6spy.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/log4j-1.2.8.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/mail.jar
+			</systemPath>
+		</dependency>
+
+		<!--<dependency>-->
+			<!--<groupId>com.mondrian</groupId>-->
+			<!--<artifactId>mondrian</artifactId>-->
+			<!--<version>9.2.0.0155</version>-->
+			<!--<scope>system</scope>-->
+			<!--<systemPath>${project.lib.path}/mondrian.jar-->
+			<!--</systemPath>-->
+		<!--</dependency>-->
+
+		<dependency>
+			<groupId>com.geomondrian</groupId>
+			<artifactId>geomondrian</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/geomondrian.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.olap4j</groupId>
+			<artifactId>olap4j</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/olap4j.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>org.postgis</groupId>
+			<artifactId>postgis</artifactId>
+			<version>9.2.0.0155</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/postgis_1.3.3.jar
+			</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>org.datasyslab</groupId>
+			<artifactId>geospark</artifactId>
+			<version>1.1.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vividsolutions</groupId>
+			<artifactId>jts</artifactId>
+			<version>1.8</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.opengis</groupId>
+			<artifactId>geoapi</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.checkerframework</groupId>
+			<artifactId>jdk7</artifactId>
+			<version>2.1.7</version>
+		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>com.postgresql</groupId>-->
+			<!--<artifactId>postgresql</artifactId>-->
+			<!--<version>9.2.0.0155</version>-->
+			<!--<scope>system</scope>-->
+			<!--<systemPath>${project.lib.path}/postgresql-8.3-603.jdbc3.jar-->
+			<!--</systemPath>-->
+		<!--</dependency>-->
+
+		<!--<dependency>-->
+			<!--<groupId>com.saaj-api</groupId>-->
+			<!--<artifactId>saaj-api</artifactId>-->
+			<!--<version>9.2.0.0155</version>-->
+			<!--<scope>system</scope>-->
+			<!--<systemPath>${project.lib.path}/saaj-api.jar-->
+			<!--</systemPath>-->
+		<!--</dependency>-->
+
+		<!--<dependency>-->
+			<!--<groupId>com.saaj-ri</groupId>-->
+			<!--<artifactId>saaj-ri</artifactId>-->
+			<!--<version>9.2.0.0155</version>-->
+			<!--<scope>system</scope>-->
+			<!--<systemPath>${project.lib.path}/saaj-ri.jar-->
+			<!--</systemPath>-->
+		<!--</dependency>-->
+
+		<!--<dependency>-->
+			<!--<groupId>com.saxpath</groupId>-->
+			<!--<artifactId>saxpath</artifactId>-->
+			<!--<version>9.2.0.0155</version>-->
+			<!--<scope>system</scope>-->
+			<!--<systemPath>${project.lib.path}/saxpath.jar-->
+			<!--</systemPath>-->
+		<!--</dependency>-->
+
+		<!--<dependency>-->
+			<!--<groupId>com.standard</groupId>-->
+			<!--<artifactId>standard</artifactId>-->
+			<!--<version>9.2.0.0155</version>-->
+			<!--<scope>system</scope>-->
+			<!--<systemPath>${project.lib.path}/standard.jar-->
+			<!--</systemPath>-->
+		<!--</dependency>-->
+
+		<!--<dependency>-->
+			<!--<groupId>com.tbutils</groupId>-->
+			<!--<artifactId>tbutils</artifactId>-->
+			<!--<version>9.2.0.0155</version>-->
+			<!--<scope>system</scope>-->
+			<!--<systemPath>${project.lib.path}/tbutils-wcf.jar-->
+			<!--</systemPath>-->
+		<!--</dependency>-->
+
+		<!--<dependency>-->
+			<!--<groupId>com.vecmath</groupId>-->
+			<!--<artifactId>vecmath</artifactId>-->
+			<!--<version>9.2.0.0155</version>-->
+			<!--<scope>system</scope>-->
+			<!--<systemPath>${project.lib.path}/vecmath-1.3.2.jar-->
+			<!--</systemPath>-->
+		<!--</dependency>-->
+
+		<!--<dependency>-->
+			<!--<groupId>com.wcf</groupId>-->
+			<!--<artifactId>wcf</artifactId>-->
+			<!--<version>9.2.0.0155</version>-->
+			<!--<scope>system</scope>-->
+			<!--<systemPath>${project.lib.path}/wcf.jar-->
+			<!--</systemPath>-->
+		<!--</dependency>-->
+
+		<!--<dependency>-->
+			<!--<groupId>com.xmlunit</groupId>-->
+			<!--<artifactId>xmlunit</artifactId>-->
+			<!--<version>9.2.0.0155</version>-->
+			<!--<scope>system</scope>-->
+			<!--<systemPath>${project.lib.path}/xmlunit.jar-->
+			<!--</systemPath>-->
+		<!--</dependency>-->
+
+		<!--<dependency>-->
+			<!--<groupId>commons-collections</groupId>-->
+			<!--<artifactId>commons-collections</artifactId>-->
+			<!--<version>3.2.2</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>commons-dbcp</groupId>-->
+			<!--<artifactId>commons-dbcp</artifactId>-->
+			<!--<version>1.4</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>commons-lang</groupId>-->
+			<!--<artifactId>commons-lang</artifactId>-->
+			<!--<version>2.4</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.4</version>
+			<scope>compile</scope>
+		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>commons-logging</groupId>-->
+			<!--<artifactId>commons-logging</artifactId>-->
+			<!--<version>1.1.1</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>commons-math</groupId>-->
+			<!--<artifactId>commons-math</artifactId>-->
+			<!--<version>1.1</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>commons-pool</groupId>-->
+			<!--<artifactId>commons-pool</artifactId>-->
+			<!--<version>1.6</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>commons-vfs</groupId>-->
+			<!--<artifactId>commons-vfs</artifactId>-->
+			<!--<version>1.0</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.apache.commons</groupId>-->
+			<!--<artifactId>commons-vfs2</artifactId>-->
+			<!--<version>2.0</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>net.java.dev.javacc</groupId>-->
+			<!--<artifactId>javacc</artifactId>-->
+			<!--<version>5.0</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>dom4j</groupId>-->
+			<!--<artifactId>dom4j</artifactId>-->
+			<!--<version>1.6.1</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>javax.validation</groupId>-->
+			<!--<artifactId>validation-api</artifactId>-->
+			<!--<version>1.1.0.Final</version>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>eigenbase</groupId>-->
+			<!--<artifactId>eigenbase-xom</artifactId>-->
+			<!--<version>1.3.2</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>eigenbase</groupId>-->
+			<!--<artifactId>eigenbase-properties</artifactId>-->
+			<!--<version>1.1.3</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>eigenbase</groupId>-->
+			<!--<artifactId>eigenbase-resgen</artifactId>-->
+			<!--<version>1.3.2</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>sun</groupId>-->
+			<!--<artifactId>jlfgr</artifactId>-->
+			<!--<version>1.0</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>com.sun</groupId>-->
+			<!--<artifactId>rt-jdk1.5</artifactId>-->
+			<!--<version>1.5.0_22</version>-->
+			<!--<optional>true</optional>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>net.java.openjdk</groupId>-->
+			<!--<artifactId>ctsym-java6</artifactId>-->
+			<!--<version>1.6.0_24</version>-->
+			<!--<optional>true</optional>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>javax.servlet</groupId>-->
+			<!--<artifactId>jsp-api</artifactId>-->
+			<!--<version>2.0</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>javax.servlet</groupId>-->
+			<!--<artifactId>servlet-api</artifactId>-->
+			<!--<version>2.4</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>log4j</groupId>-->
+			<!--<artifactId>log4j</artifactId>-->
+			<!--<version>1.2.14</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.olap4j</groupId>-->
+			<!--<artifactId>olap4j</artifactId>-->
+			<!--<version>1.2.0</version>-->
+			<!--&lt;!&ndash;<scope>compile</scope>&ndash;&gt;-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.olap4j</groupId>-->
+			<!--<artifactId>olap4j</artifactId>-->
+			<!--<version>1.2.0</version>-->
+			<!--<type>source</type>-->
+			<!--<classifier>sources</classifier>-->
+			<!--<optional>true</optional>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.olap4j</groupId>-->
+			<!--<artifactId>olap4j-tck</artifactId>-->
+			<!--<version>1.2.0</version>-->
+			<!--<optional>true</optional>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.olap4j</groupId>-->
+			<!--<artifactId>olap4j-xmla</artifactId>-->
+			<!--<version>1.2.0</version>-->
+			<!--<optional>true</optional>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.olap4j</groupId>-->
+			<!--<artifactId>olap4j-xmlaserver</artifactId>-->
+			<!--<version>1.2.0</version>-->
+			<!--&lt;!&ndash;<scope>compile</scope>&ndash;&gt;-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>xalan</groupId>-->
+			<!--<artifactId>xalan</artifactId>-->
+			<!--<version>2.6.0</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>xerces</groupId>-->
+			<!--<artifactId>xercesImpl</artifactId>-->
+			<!--<version>2.9.1</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>biz.aQute</groupId>-->
+			<!--<artifactId>bnd</artifactId>-->
+			<!--<version>2.3.0</version>-->
+			<!--<optional>true</optional>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>backport-util-concurrent</groupId>-->
+			<!--<artifactId>backport-util-concurrent</artifactId>-->
+			<!--<version>3.1</version>-->
+			<!--<optional>true</optional>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>asm</groupId>-->
+			<!--<artifactId>kasm</artifactId>-->
+			<!--<version>1.3.5</version>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>asm</groupId>-->
+			<!--<artifactId>asm-commons</artifactId>-->
+			<!--<version>3.1</version>-->
+			<!--<optional>true</optional>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>asm</groupId>-->
+			<!--<artifactId>asm-util</artifactId>-->
+			<!--<version>3.1</version>-->
+			<!--<optional>true</optional>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>retroweaver</groupId>-->
+			<!--<artifactId>retroweaver</artifactId>-->
+			<!--<version>2.0.7</version>-->
+			<!--<optional>true</optional>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>retroweaver</groupId>-->
+			<!--<artifactId>retroweaver-rt</artifactId>-->
+			<!--<version>2.0.7</version>-->
+			<!--<optional>true</optional>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>hsqldb</groupId>-->
+			<!--<artifactId>hsqldb</artifactId>-->
+			<!--<version>1.8.0.10</version>-->
+			<!--<optional>true</optional>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>junit</groupId>-->
+			<!--<artifactId>junit</artifactId>-->
+			<!--<version>3.8.1</version>-->
+			<!--<optional>true</optional>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.mockito</groupId>-->
+			<!--<artifactId>mockito-all</artifactId>-->
+			<!--<version>1.8.5</version>-->
+			<!--<optional>true</optional>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>xmlunit</groupId>-->
+			<!--<artifactId>xmlunit</artifactId>-->
+			<!--<version>1.3</version>-->
+			<!--<optional>true</optional>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>monetdb</groupId>-->
+			<!--<artifactId>monetdb-jdbc</artifactId>-->
+			<!--<version>2.8</version>-->
+			<!--<optional>true</optional>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>pentaho</groupId>-->
+			<!--<artifactId>mondrian-data-foodmart</artifactId>-->
+			<!--<version>1.0.0</version>-->
+			<!--<optional>true</optional>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>pentaho</groupId>-->
+			<!--<artifactId>mondrian-data-foodmart-json</artifactId>-->
+			<!--<version>0.1</version>-->
+			<!--<optional>true</optional>-->
+		<!--</dependency>-->
+
+
+		<!-- 기존 mondrian -->
+		<!--<dependency>-->
+			<!--<groupId>pentaho</groupId>-->
+			<!--<artifactId>mondrian</artifactId>-->
+			<!--<version>${pentaho-version}</version>-->
+			<!--<exclusions>-->
+				<!--<exclusion>-->
+					<!--<groupId>javax.servlet</groupId>-->
+					<!--<artifactId>servlet-api</artifactId>-->
+				<!--</exclusion>-->
+				<!--<exclusion>-->
+					<!--<groupId>javax.servlet</groupId>-->
+					<!--<artifactId>jsp-api</artifactId>-->
+				<!--</exclusion>-->
+				<!--<exclusion>-->
+					<!--<artifactId>xml-apis</artifactId>-->
+					<!--<groupId>xml-apis</groupId>-->
+				<!--</exclusion>-->
+				<!--<exclusion>-->
+					<!--<artifactId>xercesImpl</artifactId>-->
+					<!--<groupId>xerces</groupId>-->
+				<!--</exclusion>-->
+				<!--<exclusion>-->
+					<!--<artifactId>xalan</artifactId>-->
+					<!--<groupId>xalan</groupId>-->
+				<!--</exclusion>-->
+				<!--<exclusion>-->
+					<!--<artifactId>dom4j</artifactId>-->
+					<!--<groupId>dom4j</groupId>-->
+				<!--</exclusion>-->
+			<!--</exclusions>-->
+		<!--</dependency>-->
 		
 		<!-- Xalan (or some javax transformer implementation) is required by ehcache -->
 		<dependency>
@@ -127,7 +915,17 @@
 			<artifactId>hsqldb</artifactId>
 		</dependency>
 
-		<!-- test scope -->
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>8.4-702.jdbc4</version>
+		</dependency>
+
+		<!--<dependency>-->
+			<!--<groupId>net.postgis</groupId>-->
+			<!--<artifactId>postgis-jdbc</artifactId>-->
+			<!--<version>2.2.1</version>-->
+		<!--</dependency>-->
 
 		<dependency>
 			<groupId>junit</groupId>
