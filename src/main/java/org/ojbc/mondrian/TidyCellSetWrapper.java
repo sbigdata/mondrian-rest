@@ -16,37 +16,40 @@
  */
 package org.ojbc.mondrian;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.esri.core.geometry.GeometryEngine;
+import com.esri.core.geometry.WktExportFlags;
+import com.esri.core.geometry.ogc.OGCGeometry;
+import com.esri.hadoop.hive.GeometryUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.olap4j.Cell;
-import org.olap4j.CellSet;
-import org.olap4j.CellSetAxis;
-import org.olap4j.Position;
+import org.apache.hadoop.io.ByteWritable;
+import org.apache.hadoop.io.BytesWritable;
+import org.geotools.text.Text;
+import org.olap4j.*;
 import org.olap4j.metadata.Level;
 import org.olap4j.metadata.Member;
 import org.olap4j.metadata.Member.Type;
+import org.postgis.Geometry;
+import com.esri.hadoop.hive.GeometryUtils.OGCType;
+//import com.esri.core.geometry.GeometryEngine;
+//import com.esri.core.geometry.ogc.OGCGeometry;
 
 /**
  * Wrapper object for tidied cell sets.
  *
  */
 public class TidyCellSetWrapper implements CellSetWrapperType {
-	
+
 	private static final String MEASURES_LEVEL_UNIQUE_NAME = "[Measures].[MeasuresLevel]";
 	private static final String HASH_KEY = ".H";
 	private static final String ORDER_KEY = ".O";
-	
+
 	private final Log log = LogFactory.getLog(TidyCellSetWrapper.class);
-	
+
 	private List<Map<String, Object>> values = new ArrayList<>();
-	
+
 	/**
 	 * Initialize this wrapper
 	 * @param cellSet the olap4j cell set to wrap
@@ -54,16 +57,16 @@ public class TidyCellSetWrapper implements CellSetWrapperType {
 	 * @param dimensionNameTranslationMap a map to use in creating custom names from the original names in the cell set
 	 */
 	public void init(CellSet cellSet, boolean simplifyNames, Map<String, String> dimensionNameTranslationMap) {
-		
+
 		log.debug("Start of init");
-		
+
 		List<Map<String, Object>> positionIntersectionList = buildPositionIntersectionList(cellSet);
 		values = reducePositionIntersectionList(positionIntersectionList);
-		
+
 		if (dimensionNameTranslationMap == null) {
 			dimensionNameTranslationMap = new HashMap<>();
 		}
-		
+
 		if (simplifyNames) {
 			List<Map<String, Object>> newValues = new ArrayList<>();
 			for (Map<String, Object> rowMap : values) {
@@ -79,7 +82,7 @@ public class TidyCellSetWrapper implements CellSetWrapperType {
 			}
 			values = newValues;
 		}
-		
+
 	}
 
 	private String getLevelNameForUniqueName(CellSet cellSet, String levelUniqueName) {
@@ -108,9 +111,9 @@ public class TidyCellSetWrapper implements CellSetWrapperType {
 	}
 
 	private List<Map<String, Object>> reducePositionIntersectionList(List<Map<String, Object>> positionIntersectionList) {
-		
+
 		Map<Object, Map<String, Object>> reducedMap = new HashMap<>();
-		
+
 		for (int i=0;i < positionIntersectionList.size();i++) {
 			Map<String, Object> map = positionIntersectionList.get(i);
 			Object hashKey = map.get(HASH_KEY);
@@ -122,7 +125,7 @@ public class TidyCellSetWrapper implements CellSetWrapperType {
 				reducedMap.put(hashKey, map);
 			}
 		}
-		
+
 		List<Map<String, Object>> ret = new ArrayList<>();
 		ret.addAll(reducedMap.values());
 		ret.sort(new Comparator<Map<String, Object>>() {
@@ -132,56 +135,58 @@ public class TidyCellSetWrapper implements CellSetWrapperType {
 				return ((Comparable<Integer>) o1.get(ORDER_KEY)).compareTo((Integer) o2.get(ORDER_KEY));
 			}
 		});
-		
+
 		for (Map<String, Object> row : ret) {
 			row.remove(HASH_KEY);
 			row.remove(ORDER_KEY);
 		}
-		
+
 		return ret;
-		
+
 	}
 
 	private List<Map<String, Object>> buildPositionIntersectionList(CellSet cellSet) {
-		
+
 		List<Map<String, Object>> ret = new ArrayList<>();
-		
+
 		List<CellSetAxis> axes = cellSet.getAxes();
 		List<List<Position>> positionLists = new ArrayList<>();
 		for (CellSetAxis axis : axes) {
 			positionLists.add(axis.getPositions());
 		}
-		
+
 		positionLists = MondrianUtils.permuteLists(positionLists);
-		
+
 		int valueIndex = 0;
 		for (List<Position> positionList : positionLists) {
-			
+
 			Cell cell = cellSet.getCell(positionList.toArray(new Position[0]));
 			Map<String, Object> map = new HashMap<>();
-			
+
 			for (Position position : positionList) {
 				List<Member> members = position.getMembers();
 				for (Member member : members) {
 					map.putAll(getHierarchyMap(member));
+//					member.put()
+//					map.putAll("geom",member.getPropertyValue(member.getProperties().get("sd_eng_nam")));
 				}
 			}
-			
+
 			String measureValue = (String) map.get(MEASURES_LEVEL_UNIQUE_NAME);
 			map.remove(MEASURES_LEVEL_UNIQUE_NAME);
 			map.put(HASH_KEY, map.hashCode());
 			map.put(MEASURES_LEVEL_UNIQUE_NAME, measureValue);
-
 			map.put(measureValue, cell.getValue());
+//			map.put(measureValue, cell.());
 			map.put(ORDER_KEY, valueIndex++);
 			ret.add(map);
-			
+
 		}
-		
+
 		return ret;
-		
+
 	}
-	
+
 	private Map<String, String> getHierarchyMap(Member member) {
 		Map<String, String> ret = new HashMap<>();
 		Member m = member;
@@ -190,14 +195,107 @@ public class TidyCellSetWrapper implements CellSetWrapperType {
 				String uniqueName = m.getLevel().getUniqueName();
 				String value = m.getName();
 				ret.put(uniqueName, value);
+				try {
+					if(m.getProperties().get("geom") != null && m.getPropertyValue(m.getProperties().get("geom")) instanceof String) {
+//						String s1 = Arrays.toString((byte[]) m.getPropertyValue(m.getProperties().get("geom")));
+//						BytesWritable a = new BytesWritable((byte []) m.getPropertyValue(m.getProperties().get("geom")));
+//                        OGCGeometry ogcGeometry = GeometryUtils.geometryFromEsriShape(a);
+//                        int wktExportFlag = getWktExportFlag(GeometryUtils.getType(a));
+
+						ret.put("geom", m.getPropertyValue(m.getProperties().get("geom")).toString());
+
+
+					}
+				} catch (OlapException e) {
+					e.printStackTrace();
+				}
 			}
 			m = m.getParentMember();
 		}
 		return ret;
 	}
-	
+
+    private int getWktExportFlag(OGCType type){
+        switch (type){
+            case ST_POLYGON:
+                return WktExportFlags.wktExportPolygon;
+            case ST_MULTIPOLYGON:
+                return WktExportFlags.wktExportMultiPolygon;
+            case ST_POINT:
+                return WktExportFlags.wktExportPoint;
+            case ST_MULTIPOINT:
+                return WktExportFlags.wktExportMultiPoint;
+            case ST_LINESTRING:
+                return WktExportFlags.wktExportLineString;
+            case ST_MULTILINESTRING:
+                return WktExportFlags.wktExportMultiLineString;
+            default:
+                return WktExportFlags.wktExportDefaults;
+        }
+    }
+
 	public List<Map<String, Object>> getValues() {
 		return Collections.unmodifiableList(values);
 	}
-	
+
+	/**
+	 * 바이너리 바이트 배열을 스트링으로 변환
+	 *
+	 * @param b
+	 * @return
+	 */
+	public static String byteArrayToBinaryString(byte[] b) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < b.length; ++i) {
+			sb.append(byteToBinaryString(b[i]));
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * 바이너리 바이트를 스트링으로 변환
+	 *
+	 * @param n
+	 * @return
+	 */
+	public static String byteToBinaryString(byte n) {
+		StringBuilder sb = new StringBuilder("00000000");
+		for (int bit = 0; bit < 8; bit++) {
+			if (((n >> bit) & 1) > 0) {
+				sb.setCharAt(7 - bit, '1');
+			}
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * 바이너리 스트링을 바이트배열로 변환
+	 *
+	 * @param s
+	 * @return
+	 */
+	public static byte[] binaryStringToByteArray(String s) {
+		int count = s.length() / 8;
+		byte[] b = new byte[count];
+		for (int i = 1; i < count; ++i) {
+			String t = s.substring((i - 1) * 8, i * 8);
+			b[i - 1] = binaryStringToByte(t);
+		}
+		return b;
+	}
+
+	/**
+	 * 바이너리 스트링을 바이트로 변환
+	 *
+	 * @param s
+	 * @return
+	 */
+	public static byte binaryStringToByte(String s) {
+		byte ret = 0, total = 0;
+		for (int i = 0; i < 8; ++i) {
+			ret = (s.charAt(7 - i) == '1') ? (byte) (1 << i) : 0;
+			total = (byte) (ret | total);
+		}
+		return total;
+	}
 }

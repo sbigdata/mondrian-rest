@@ -16,9 +16,14 @@
  */
 package org.ojbc.mondrian.rest;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ehcache.Cache;
@@ -29,38 +34,39 @@ import org.ehcache.xml.XmlConfiguration;
 import org.ojbc.mondrian.CellSetWrapper;
 import org.ojbc.mondrian.CellSetWrapperType;
 import org.ojbc.mondrian.MondrianConnectionFactory;
+import org.ojbc.mondrian.SchemaWrapper;
 import org.ojbc.mondrian.TidyCellSetWrapper;
 import org.olap4j.CellSet;
 import org.olap4j.OlapConnection;
 import org.olap4j.OlapException;
 import org.olap4j.OlapStatement;
+import org.olap4j.metadata.Schema;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * REST API for interacting with Mondrian.
+ *
  */
-
+@SpringBootApplication
 @CrossOrigin(origins = "*")
 @RestController
-
 public class MondrianRestController {
 
     private final Log log = LogFactory.getLog(MondrianRestController.class);
     private MondrianConnectionFactory connectionFactory;
     private Cache<Integer, CellSetWrapperType> queryCache;
 
-    @Resource(name = "${requestAuthorizerBeanName}")
+    @Resource(name="${requestAuthorizerBeanName}")
     private RequestAuthorizer requestAuthorizer;
 
     @Value("${removeDemoConnections}")
@@ -80,11 +86,10 @@ public class MondrianRestController {
 
     /**
      * Get all the connections available to this instance of the API
-     *
      * @return json string with connection information
      * @throws Exception
      */
-    @RequestMapping(value = "/getConnections", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value="/getConnections", method=RequestMethod.GET, produces="application/json")
     public String getConnections() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.addMixIn(MondrianConnectionFactory.MondrianConnection.class, SchemaContentHidingMixIn.class);
@@ -93,12 +98,11 @@ public class MondrianRestController {
 
     /**
      * Get the Mondrian schema XML for the specified connection.  Sets HTTP Status of 500 if the specified connection does not exist.
-     *
      * @param connectionName the connection to search for
      * @return the specified connection's Mondrian schema (as XML), or null if not found
      * @throws Exception
      */
-    @RequestMapping(value = "/getSchema", method = RequestMethod.GET, produces = "application/xml")
+    @RequestMapping(value="/getSchema", method=RequestMethod.GET, produces="application/xml")
     public ResponseEntity<String> getSchema(String connectionName) throws Exception {
 
         String body = null;
@@ -121,21 +125,62 @@ public class MondrianRestController {
     /**
      * Flush the query cache
      */
-    @RequestMapping(value = "/flushCache", method = RequestMethod.GET)
+    @RequestMapping(value="/flushCache", method=RequestMethod.GET)
     public ResponseEntity<Void> flushCache() {
         queryCache.clear();
         log.info("Query cache flushed");
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
+    @RequestMapping(value="/getMetadata", method=RequestMethod.GET, produces="application/json")
+    public ResponseEntity<String> getMetadata(String connectionName) throws Exception {
+
+        String body = null;
+        HttpStatus status = HttpStatus.OK;
+
+        MondrianConnectionFactory.MondrianConnection connection = connectionFactory.getConnections().get(connectionName);
+
+        if (connection == null) {
+            log.warn("Attempt to retrieve metadata for connection that does not exist: " + connectionName);
+            status = HttpStatus.NOT_FOUND;
+        } else {
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+
+                OlapConnection olapConnection = connection.getOlap4jConnection().unwrap(OlapConnection.class);
+                Schema schema = olapConnection.getOlapSchema();
+                SchemaWrapper schemaWrapper = new SchemaWrapper(schema);
+                body = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(schemaWrapper);
+            } catch (OlapException oe) {
+                log.warn("OlapException occurred retrieving metadata.  Stack trace follows (if debug logging).");
+                log.debug("Stack trace: ", oe);
+                Map<String, String> errorBodyMap = new HashMap<>();
+                errorBodyMap.put("reason", oe.getMessage());
+                Throwable rootCause = oe;
+                Throwable nextCause = oe.getCause();
+                while (nextCause != null) {
+                    rootCause = nextCause;
+                    nextCause = rootCause.getCause();
+                }
+                errorBodyMap.put("rootCauseReason", rootCause.getMessage());
+                errorBodyMap.put("SQLState", oe.getSQLState());
+                log.warn("Exception root cause: " + rootCause.getMessage());
+                body = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(errorBodyMap);
+                status = HttpStatus.valueOf(500);
+            }
+        }
+
+        return new ResponseEntity<String>(body, status);
+
+    }
+
     /**
      * Submit the specified MDX query to the specified Mondrian connection.  Sets HTTP Status of 500 if the specified connection does not exist or if the query syntax is invalid.
-     *
      * @param queryRequest the query request (specifies the connection, by name, and the MDX query string)
      * @return json string containing the resulting CellSet, or null if no results
      * @throws Exception
      */
-    @RequestMapping(value = "/query", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value="/query", method=RequestMethod.POST, produces="application/json", consumes="application/json")
     public ResponseEntity<String> query(@RequestBody QueryRequest queryRequest, HttpServletRequest request) throws Exception {
 
         RequestAuthorizer.RequestAuthorizationStatus authorizationStatus = requestAuthorizer.authorizeRequest(request, queryRequest);
@@ -239,8 +284,7 @@ public class MondrianRestController {
 
                 }
 
-                if (querySucceeded) {
-                    body = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(outputObject);
+                if (querySucceeded) { body = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(outputObject);
                 }
 
             }

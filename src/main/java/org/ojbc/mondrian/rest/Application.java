@@ -25,13 +25,10 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 
 @SpringBootApplication
-
 public class Application extends SpringBootServletInitializer {
-	
+
 	private final Log log = LogFactory.getLog(Application.class);
-
     public static ApplicationContext applicationContext;
-
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
@@ -41,5 +38,5 @@ public class Application extends SpringBootServletInitializer {
     public static void main(String[] args) {
         applicationContext = SpringApplication.run(Application.class, args);
     }
-    
+
 }

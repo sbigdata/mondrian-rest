@@ -30,7 +30,7 @@
                         <Level name = "Name" table="estate" column="name" uniqueMembers="false">
                                 <Property name="street_name" column="street" type="String" />
                                 <Property name="building_type" column="type" type="String" />
-                                <Property name="address" column="address" type="String" />	
+                                <Property name="address" column="address" type="String" />
                                 <Property name="built_year" column="built_year" type="Numeric" />
                                 <Property name="geocode" column="geocode" type="String" />
                         </Level>

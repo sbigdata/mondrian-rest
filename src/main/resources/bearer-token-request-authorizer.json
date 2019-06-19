@@ -1,18 +1,22 @@
 {
 	"TOKEN1" : {
 		"test": "org.ojbc.mondrian.rest.RequestAuthorizer-All-Access",
-		"foodmart": "org.ojbc.mondrian.rest.RequestAuthorizer-All-Access"
+		"foodmart": "org.ojbc.mondrian.rest.RequestAuthorizer-All-Access",
+		"marmot": "org.ojbc.mondrian.rest.RequestAuthorizer-All-Access"
 	},
 	"TOKEN2" : {
 		"test": "Restricted_User",
-		"foodmart": "org.ojbc.mondrian.rest.RequestAuthorizer-All-Access"
+		"foodmart": "org.ojbc.mondrian.rest.RequestAuthorizer-All-Access",
+		"marmot": "org.ojbc.mondrian.rest.RequestAuthorizer-All-Access"
 	},
 	"CA_MANAGER_TOKEN" : {
 		"test": "org.ojbc.mondrian.rest.RequestAuthorizer-All-Access",
-		"foodmart": "California manager"
+		"foodmart": "California manager",
+		"marmot": "org.ojbc.mondrian.rest.RequestAuthorizer-All-Access"
 	},
 	"NO_HR_CUBE_TOKEN" : {
 		"test": "org.ojbc.mondrian.rest.RequestAuthorizer-All-Access",
-		"foodmart": "No HR Cube"
+		"foodmart": "No HR Cube",
+		"marmot": "No HR Cube"
 	}
 }

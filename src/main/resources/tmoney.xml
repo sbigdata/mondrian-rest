@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<Schema name="public_transport_data">
+    <Cube name="PublicTransportData" defaultMeasure="TotalFare">
+        <Table name="데이터"/>
+        <Dimension name="Region" foreignKey="교통사업자ID">
+            <Hierarchy hasAll="false" primaryKey="교통사업자ID">
+                <Table name="버스노선정류장정보"/>
+                <Level name="SD" column="시도구분" uniqueMembers="false"/>
+                <Level name="SGG" column="행정구" uniqueMembers="false"/>
+                <Level name="EMD" column="행정동" uniqueMembers="false"/>
+            </Hierarchy>
+        </Dimension>
+
+        <Dimension name="Time" type="TimeDimension" foreignKey="승차일시">
+            <Hierarchy hasAll="false" primaryKey="승차일시">
+                <Level name="Year" column="연도" type="Numeric" uniqueMembers="false" levelType="TimeYears"/>
+                <Level name="Month" column="월" type="Numeric" uniqueMembers="false" levelType="TimeMonths"/>
+                <Level name="Day" column="일" type="Numeric" uniqueMembers="false" levelType="TimeDays"/>
+            </Hierarchy>
+        </Dimension>
+
+        <Measure name="TotalFare" column="승하차금액" aggregator="sum" formatString="Standard"/>
+        <Measure name="NumRecord" column="승하차금액" aggregator="count" formatString="Standard"/>
+        <Measure name="AvgFare" column="승하차금액" aggregator="avg" formatString="Standard"/>
+        <Measure name="MaxPenalty" column="승하차위반금액" aggregator="max" formatString="Standard"/>
+        <Measure name="TotalDistance" column="총이용거리" aggregator="sum" formatString="Standard"/>
+    </Cube>
+</Schema>
+

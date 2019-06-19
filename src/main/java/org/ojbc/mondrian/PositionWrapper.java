@@ -16,47 +16,44 @@
  */
 package org.ojbc.mondrian;
 
-import org.olap4j.Position;
-import org.olap4j.metadata.Member;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
+
+import org.olap4j.Position;
+import org.olap4j.metadata.Member;
 
 /**
  * A wrapper around Mondrian Position objects, suitable for serialization via json.
  *
  */
 public class PositionWrapper {
-	
+
 	private List<String> memberDimensionNames;
 	private List<String> memberDimensionCaptions;
 	private List<String> memberDimensionValues;
 	private List<String> memberLevelNames;
-	
+
 	PositionWrapper() {
-		
+
 	}
-	
+
 	public PositionWrapper(Position position) {
-		
+
 		memberDimensionNames = new ArrayList<>();
 		memberDimensionCaptions = new ArrayList<>();
 		memberDimensionValues = new ArrayList<>();
 		memberLevelNames = new ArrayList<>();
 
-		Locale locale = null;
-
 		for (Member member : position.getMembers()) {
 			memberDimensionNames.add(member.getDimension().getName());
-			memberDimensionCaptions.add(member.getDimension().getCaption(locale));
+			memberDimensionCaptions.add(member.getDimension().getCaption());
 			memberDimensionValues.add(member.getName());
 			memberLevelNames.add(member.getLevel().getUniqueName());
 		}
-		
+
 	}
-	
+
 	public List<String> getMemberDimensionNames() {
 		return Collections.unmodifiableList(memberDimensionNames);
 	}

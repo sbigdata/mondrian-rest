@@ -24,7 +24,7 @@ import java.util.Map;
  *
  */
 public class QueryRequest {
-	
+
 	public static final class TidyConfig {
 		@Override
 		public int hashCode() {
@@ -61,12 +61,12 @@ public class QueryRequest {
 			this.levelNameTranslationMap = dimensionNames;
 		}
 	}
-	
+
 	private String connectionName;
 	private String query;
 	private TidyConfig tidy;
 	private String mondrianRole;
-	
+
 	public String getMondrianRole() {
 		return mondrianRole;
 	}
@@ -91,7 +91,7 @@ public class QueryRequest {
 	public void setTidy(TidyConfig tidy) {
 		this.tidy = tidy;
 	}
-	
+
 	public int getCacheKey() {
 		final int prime = 31;
 		int result = 1;
