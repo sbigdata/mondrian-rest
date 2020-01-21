@@ -2,7 +2,7 @@
 
 <Schema name="public_transport_data">
     <Cube name="PublicTransportData" defaultMeasure="TotalFare">
-        <Table name="데이터"/>
+        <Table name="2017"/>
         <Dimension name="Region" foreignKey="교통사업자ID">
             <Hierarchy hasAll="false" primaryKey="교통사업자ID">
                 <Table name="버스노선정류장정보"/>
@@ -20,11 +20,10 @@
             </Hierarchy>
         </Dimension>
 
-        <Measure name="TotalFare" column="승하차금액" aggregator="sum" formatString="Standard"/>
+        <Measure name="Total" column="승하차금액" aggregator="sum" formatString="Standard"/>
         <Measure name="NumRecord" column="승하차금액" aggregator="count" formatString="Standard"/>
-        <Measure name="AvgFare" column="승하차금액" aggregator="avg" formatString="Standard"/>
-        <Measure name="MaxPenalty" column="승하차위반금액" aggregator="max" formatString="Standard"/>
-        <Measure name="TotalDistance" column="총이용거리" aggregator="sum" formatString="Standard"/>
+        <Measure name="Avg" column="승하차금액" aggregator="avg" formatString="Standard"/>
+        <Measure name="Max" column="승하차위반금액" aggregator="max" formatString="Standard"/>
     </Cube>
 </Schema>
 

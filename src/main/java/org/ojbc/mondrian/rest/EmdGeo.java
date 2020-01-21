@@ -1,47 +1,39 @@
 package org.ojbc.mondrian.rest;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.hibernate.annotations.ColumnTransformer;
 
-@Table(name="emdgeo")
+import javax.persistence.*;
+
+/**
+ * Emdgeo Table Connection
+ */
+
+@Table(name = "emdgeo")
 @Entity
-public class EmdGeo{
+public class EmdGeo {
 
-    @Id
-    Integer id;
+    @Column(name = "NAME")
+    String name;
 
-    @Column(name="emd_eng_na")
-    String emdEnglishName;
-
-    @Column(name="emd_kor_na")
-    String emdKorName;
-
+    @ColumnTransformer(read="st_astext(geom)")
     String geom;
 
-    public String getEmdEnglishName() {
-        return emdEnglishName;
+    @Id
+    @Column(name = "emdcode")
+    String emdCode;
+
+    @Column(name = "sigcode")
+    String sigCode;
+
+    @Column(name = "sdcode")
+    String sdCode;
+
+    public String getName() {
+        return name;
     }
 
-    public void setEmdEnglishName(String emdEnglishName) {
-        this.emdEnglishName = emdEnglishName;
-    }
-
-    public String getEmdKorName() {
-        return emdKorName;
-    }
-
-    public void setEmdKorName(String emdKorName) {
-        this.emdKorName = emdKorName;
-    }
-
-    public String emdEnglishName() {
-        return emdEnglishName;
-    }
-
-    public void setemdEnglishName(String emdEnglishName) {
-        this.emdEnglishName = emdEnglishName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getGeom() {
@@ -50,5 +42,29 @@ public class EmdGeo{
 
     public void setGeom(String geom) {
         this.geom = geom;
+    }
+
+    public String getEmdCode() {
+        return emdCode;
+    }
+
+    public void setEmdCode(String emdCode) {
+        this.emdCode = emdCode;
+    }
+
+    public String getSigCode() {
+        return sigCode;
+    }
+
+    public void setSigCode(String sigCode) {
+        this.sigCode = sigCode;
+    }
+
+    public String getSdCode() {
+        return sdCode;
+    }
+
+    public void setSdCode(String sdCode) {
+        this.sdCode = sdCode;
     }
 }

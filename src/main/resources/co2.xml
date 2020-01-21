@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!-- Is it okay to use same leftKey name and rightKey name? 원본에는_fk 붙어있음.-->
+<Schema name="Environment">
+    <Cube name="Environment" defaultMeasure="12">
+        <Table name="resultData"/>
+        <Dimension name="Estate" foreignKey="emdcode">
+            <Hierarchy hasAll="true">
+                <Join leftKey="sigcode" rightKey="sigcode" rightAlias="siggeo">
+                    <Table name="emdgeo" />
+                    <Join leftKey = "sdcode" rightKey="sdcode" >
+                        <Table name="siggeo" />
+                        <Table name="sdgeo" />
+                    </Join>
+                </Join>
+                <Level name="SD" table="sdgeo" column="sdcode" uniqueMembers="true">
+                </Level>
+                <Level name="SIG" table="siggeo" column="sigcode" uniqueMembers="false">
+                </Level>
+                <Level name="EMD" table="emdgeo" column="emdcode" uniqueMembers="false">
+                </Level>
+            </Hierarchy>
+        </Dimension>
+        <Dimension name ="Time" type="TimeDimension">
+            <Hierarchy hasAll="false" primaryKey="time_id">
+                <!-- <Table name="time" /> -->
+                <Level name="Year" column="year" type="Numeric" uniqueMembers="false" levelType="TimeYears" />
+                <!--      <Level name="Quarter" column="quarter" uniqueMembers="false" levelType="TimeQuarters" />
+                     <Level name="Month" column="month" uniqueMembers="false" levelType="TimeMonths" />
+                     <Level name="Week" column="week" uniqueMembers="false" levelType="TimeWeeks" /> -->
+            </Hierarchy>
+        </Dimension>
+        <!-- <Measure name="Year" column="year" aggregator="sum" formatString="Standard"/> -->
+        <Measure name="10" column="month_1" aggregator="avg" formatString="Standard"/>
+        <Measure name="2" column="month_2" aggregator="avg" formatString="Standard"/>
+        <Measure name="3" column="month_3" aggregator="avg" formatString="Standard"/>
+        <Measure name="4" column="month_4" aggregator="avg" formatString="Standard"/>
+        <Measure name="5" column="month_5" aggregator="avg" formatString="Standard"/>
+        <Measure name="6" column="month_6" aggregator="avg" formatString="Standard"/>
+        <Measure name="7" column="month_7" aggregator="avg" formatString="Standard"/>
+        <Measure name="8" column="month_8" aggregator="avg" formatString="Standard"/>
+        <Measure name="9" column="month_9" aggregator="avg" formatString="Standard"/>
+        <Measure name="10" column="month_10" aggregator="avg" formatString="Standard"/>
+        <Measure name="11" column="month_11" aggregator="avg" formatString="Standard"/>
+        <Measure name="12" column="month_12" aggregator="avg" formatString="Standard"/>
+        <!--      <Measure name="2" column="deposit" aggregator="avg" formatString="Standard"/>
+             <Measure name="3" column="mon_fee" aggregator="avg" formatString="Standard"/> -->
+    </Cube>
+</Schema>

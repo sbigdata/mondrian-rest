@@ -47,6 +47,7 @@ public class PositionWrapper {
 
 		for (Member member : position.getMembers()) {
 			memberDimensionNames.add(member.getDimension().getName());
+			System.out.println(member.getDimension().getName());
 			memberDimensionCaptions.add(member.getDimension().getCaption());
 			memberDimensionValues.add(member.getName());
 			memberLevelNames.add(member.getLevel().getUniqueName());

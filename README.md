@@ -52,7 +52,7 @@ $ mvn spring-boot:run
 [      main] org.ojbc.mondrian.rest.Application       INFO  Started Application in 6.122 seconds (JVM running for 6.796)
 ```
 
-#### API 사용법
+## API List
 
 `/getConnections`: 접속 가능한 Connection(Schemas/JDBC)의 목록을 불러온다.
 
@@ -310,4 +310,10 @@ $: curl -s -X POST -H 'Content-Type: application/json' http://localhost:58080/mo
   } ]
 }
 $:
+```
+# Front-end Start
+
+```bash
+$ cd front-end
+$ npm run serve
 ```

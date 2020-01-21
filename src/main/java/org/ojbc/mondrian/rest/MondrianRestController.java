@@ -19,6 +19,7 @@ package org.ojbc.mondrian.rest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -55,7 +56,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * REST API for interacting with Mondrian.
- *
  */
 @SpringBootApplication
 @CrossOrigin(origins = "*")
@@ -66,7 +66,7 @@ public class MondrianRestController {
     private MondrianConnectionFactory connectionFactory;
     private Cache<Integer, CellSetWrapperType> queryCache;
 
-    @Resource(name="${requestAuthorizerBeanName}")
+    @Resource(name = "${requestAuthorizerBeanName}")
     private RequestAuthorizer requestAuthorizer;
 
     @Value("${removeDemoConnections}")
@@ -86,10 +86,11 @@ public class MondrianRestController {
 
     /**
      * Get all the connections available to this instance of the API
+     *
      * @return json string with connection information
      * @throws Exception
      */
-    @RequestMapping(value="/getConnections", method=RequestMethod.GET, produces="application/json")
+    @RequestMapping(value = "/getConnections", method = RequestMethod.GET, produces = "application/json")
     public String getConnections() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.addMixIn(MondrianConnectionFactory.MondrianConnection.class, SchemaContentHidingMixIn.class);
@@ -98,11 +99,12 @@ public class MondrianRestController {
 
     /**
      * Get the Mondrian schema XML for the specified connection.  Sets HTTP Status of 500 if the specified connection does not exist.
+     *
      * @param connectionName the connection to search for
      * @return the specified connection's Mondrian schema (as XML), or null if not found
      * @throws Exception
      */
-    @RequestMapping(value="/getSchema", method=RequestMethod.GET, produces="application/xml")
+    @RequestMapping(value = "/getSchema", method = RequestMethod.GET, produces = "application/xml")
     public ResponseEntity<String> getSchema(String connectionName) throws Exception {
 
         String body = null;
@@ -125,14 +127,14 @@ public class MondrianRestController {
     /**
      * Flush the query cache
      */
-    @RequestMapping(value="/flushCache", method=RequestMethod.GET)
+    @RequestMapping(value = "/flushCache", method = RequestMethod.GET)
     public ResponseEntity<Void> flushCache() {
         queryCache.clear();
         log.info("Query cache flushed");
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    @RequestMapping(value="/getMetadata", method=RequestMethod.GET, produces="application/json")
+    @RequestMapping(value = "/getMetadata", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<String> getMetadata(String connectionName) throws Exception {
 
         String body = null;
@@ -176,11 +178,12 @@ public class MondrianRestController {
 
     /**
      * Submit the specified MDX query to the specified Mondrian connection.  Sets HTTP Status of 500 if the specified connection does not exist or if the query syntax is invalid.
+     *
      * @param queryRequest the query request (specifies the connection, by name, and the MDX query string)
      * @return json string containing the resulting CellSet, or null if no results
      * @throws Exception
      */
-    @RequestMapping(value="/query", method=RequestMethod.POST, produces="application/json", consumes="application/json")
+    @RequestMapping(value = "/query", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponseEntity<String> query(@RequestBody QueryRequest queryRequest, HttpServletRequest request) throws Exception {
 
         RequestAuthorizer.RequestAuthorizationStatus authorizationStatus = requestAuthorizer.authorizeRequest(request, queryRequest);
@@ -246,6 +249,15 @@ public class MondrianRestController {
                         if (mondrianRoleName != null) {
                             olapConnection.setRoleName(mondrianRoleName);
                         }
+                        log.info("query: " + query);
+                        long start = System.currentTimeMillis(); //시작하는 시점 계산
+
+
+                        // 처리시간 계산
+                        ScheduledJob job = new ScheduledJob();
+                        Timer jobScheduler = new Timer();
+                        jobScheduler.scheduleAtFixedRate(job, 1000, 10000);
+
                         OlapStatement statement = olapConnection.createStatement();
                         try {
                             CellSet cellSet = statement.executeOlapQuery(query);
@@ -254,12 +266,17 @@ public class MondrianRestController {
                                 TidyCellSetWrapper tcc = new TidyCellSetWrapper();
                                 tcc.init(cellSet, simplifyNames, levelNameTranslationMap);
                                 outputObject = tcc;
+                                long end = System.currentTimeMillis(); //프로그램이 끝나는 시점 계산
+                                System.out.println("실행 시간 : " + (end - start) / 1000.0 + "초"); //실행 시간 계산 및 출력
+                                jobScheduler.cancel();
                             } else {
                                 outputObject = new CellSetWrapper(cellSet);
                             }
                             queryCache.put(cacheKey, outputObject);
                             querySucceeded = true;
                         } catch (OlapException oe) {
+                            jobScheduler.cancel();
+
                             log.warn("OlapException occurred processing query.  Stack trace follows (if debug logging).");
                             log.debug("Stack trace: ", oe);
                             Map<String, String> errorBodyMap = new HashMap<>();
@@ -284,7 +301,8 @@ public class MondrianRestController {
 
                 }
 
-                if (querySucceeded) { body = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(outputObject);
+                if (querySucceeded) {
+                    body = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(outputObject);
                 }
 
             }

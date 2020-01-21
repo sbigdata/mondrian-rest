@@ -4,7 +4,12 @@ import router from './router'
 import store from './store'
 import './registerServiceWorker'
 import vuetify from './plugins/vuetify';
+import VueLayers from 'vuelayers'
+import 'vuelayers/lib/style.css' // needs css-loader
 
+Vue.use(VueLayers, {
+    dataProjection: 'EPSG:5186',
+})
 Vue.config.productionTip = false
 
 new Vue({

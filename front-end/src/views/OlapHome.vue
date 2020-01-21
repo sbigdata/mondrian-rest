@@ -7,7 +7,6 @@
               :containerWidth="containerWidth"
               :Id="items[0].id"
               v-bind:mode.sync="mode"
-              :tmp.sync="tmp"
               :columnNav.sync="columnNav"
               :filterNav.sync="filterNav"
               :rowsNav.sync="rowsNav"
@@ -33,7 +32,6 @@
             columnNav: Array,
             rowsNav: Array,
             filterNav: Array,
-            tmp: Object
         },
         computed: {
 

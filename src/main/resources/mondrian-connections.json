@@ -1,46 +1,9 @@
 {
-	"geofoodmart" : {
-		"JdbcDriver" : "org.postgis.DriverWrapper",
-		"Jdbc" : "jdbc:postgresql_postGIS://localhost:5432/foodmart",
-		"JdbcUser" : "postgres",
-		"JdbcPassword" : "18925",
-		"Catalog" : "/simple_geofoodmart.xml",
-		"Description" : "geofoodmart",
-		"IsDemo" : true
-	},
-	"realestate" : {
-		"JdbcDriver" : "org.postgis.DriverWrapper",
-		"Jdbc" : "jdbc:postgresql_postGIS://localhost:5432/kimsanghoon",
-		"JdbcUser" : "kimsanghoon",
-		"JdbcPassword" : "18925",
-		"Catalog" : "/RealEstate.xml",
-		"Description" : "real_estate",
-		"IsDemo" : true
-	},
-
 	"marmot" : {
 		"JdbcDriver" : "triton.jdbc.driver.TritonDriver",
-		"Jdbc" : "jdbc:triton://13.124.65.71:9797/test?Unicode=true&characterEncoding=euckr",
-		"Catalog" : "/RealEstate.xml",
-		"Description" : "real_estate",
-		"IsDemo" : true
-	},
-	"hive" : {
-		"JdbcDriver" : "org.apache.hive.jdbc.HiveDriver",
-		"Jdbc" : "jdbc:hive2://54.180.24.71:10000/default",
-		"autoCommit": "true",
-		"JdbcUser" : "hive",
-		"JdbcPassword" : "18925",
-		"Catalog" : "/RealEstate.xml",
-		"Description" : "real_estate",
-		"IsDemo" : true
-	},
-
-	"tmoney" : {
-		"JdbcDriver" : "org.postgis.DriverWrapper",
-		"Jdbc" : "jdbc:postgresql_postGIS://127.0.0.1:5432/kimsanghoon",
-		"Catalog" : "/tmoney.xml",
-		"Description" : "tmoney",
+		"Jdbc" : "jdbc:triton://220.74.32.5:9797/test?Unicode=true&characterEncoding=euckr",
+		"Catalog" : "/testdata.xml",
+		"Description" : "co_2",
 		"IsDemo" : false
 	}
 }

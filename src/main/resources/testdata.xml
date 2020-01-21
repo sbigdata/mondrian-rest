@@ -1,47 +1,65 @@
 <?xml version="1.0"?>
 <!-- Is it okay to use same leftKey name and rightKey name? 원본에는_fk 붙어있음.-->
 <Schema name="Environment">
-    <Cube name="Environment" defaultMeasure="12">
-        <Table name="resultData"/>
-        <Dimension name="Estate" foreignKey="emdcode">
-            <Hierarchy hasAll="true">
-                <Join leftKey="sigcode" rightKey="sigcode" rightAlias="siggeo">
-                    <Table name="emdgeo" />
-                    <Join leftKey = "sdcode" rightKey="sdcode" >
-                        <Table name="siggeo" />
-                        <Table name="sdgeo" />
+    <Cube name="Environment" defaultMeasure="00">
+        <Table name="flow_pop_time"/>
+        <Dimension name="Estate" foreignKey="BLOCK_CD">
+            <Hierarchy hasAll="true" primaryKey="BLOCK_CD" primaryKeyTable="blockgeo">
+                <Join leftKey="emdcode" rightKey="emdcode" rightAlias="emdgeo">
+                    <Table name="blockgeo"/>
+                    <Join leftKey="sigcode" rightKey="sigcode" rightAlias="siggeo">
+                        <Table name="emdgeo"/>
+                        <Join leftKey="sdcode" rightKey="sdcode">
+                            <Table name="siggeo"/>
+                            <Table name="sdgeo"/>
+                        </Join>
                     </Join>
                 </Join>
-                <Level name="SD" table="sdgeo" column="sdcode" uniqueMembers="true">
+                <Level name="SD" table="sdgeo" column="name" uniqueMembers="true">
+                    <Property name="geom" column="geom" type="Geometry" />
                 </Level>
-                <Level name="SIG" table="siggeo" column="sigcode" uniqueMembers="false">
+                <Level name="SIG" table="siggeo" column="name" uniqueMembers="false">
+                    <Property name="geom" column="geom" type="Geometry" />
                 </Level>
-                <Level name="EMD" table="emdgeo" column="emdcode" uniqueMembers="false">
+                <Level name="EMD" table="emdgeo" column="name" uniqueMembers="false">
+                    <Property name="geom" column="geom" type="Geometry" />
                 </Level>
             </Hierarchy>
         </Dimension>
-        <Dimension name ="Time" type="TimeDimension">
+        <Dimension name="Time" type="TimeDimension">
             <Hierarchy hasAll="false" primaryKey="time_id">
                 <!-- <Table name="time" /> -->
-                <Level name="Year" column="year" type="Numeric" uniqueMembers="false" levelType="TimeYears" />
-                <!--      <Level name="Quarter" column="quarter" uniqueMembers="false" levelType="TimeQuarters" />
-                     <Level name="Month" column="month" uniqueMembers="false" levelType="TimeMonths" />
-                     <Level name="Week" column="week" uniqueMembers="false" levelType="TimeWeeks" /> -->
+                <Level name="Year" column="YEAR" type="Numeric" uniqueMembers="false" levelType="TimeYears"/>
+                <Level name="Quarter" column="QUATER" type="Numeric" uniqueMembers="false" levelType="TimeQuarters"/>
+                <Level name="Month" column="MONTH" type="Numeric" uniqueMembers="false" levelType="TimeMonths"/>
+                <!--<Level name="Week" column="week" uniqueMembers="false" levelType="TimeWeeks" />-->
             </Hierarchy>
         </Dimension>
         <!-- <Measure name="Year" column="year" aggregator="sum" formatString="Standard"/> -->
-        <Measure name="10" column="month_1" aggregator="avg" formatString="Standard"/>
-        <Measure name="2" column="month_2" aggregator="avg" formatString="Standard"/>
-        <Measure name="3" column="month_3" aggregator="avg" formatString="Standard"/>
-        <Measure name="4" column="month_4" aggregator="avg" formatString="Standard"/>
-        <Measure name="5" column="month_5" aggregator="avg" formatString="Standard"/>
-        <Measure name="6" column="month_6" aggregator="avg" formatString="Standard"/>
-        <Measure name="7" column="month_7" aggregator="avg" formatString="Standard"/>
-        <Measure name="8" column="month_8" aggregator="avg" formatString="Standard"/>
-        <Measure name="9" column="month_9" aggregator="avg" formatString="Standard"/>
-        <Measure name="10" column="month_10" aggregator="avg" formatString="Standard"/>
-        <Measure name="11" column="month_11" aggregator="avg" formatString="Standard"/>
-        <Measure name="12" column="month_12" aggregator="avg" formatString="Standard"/>
+        <Measure name="00" column="avg_00tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="01" column="avg_01tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="02" column="avg_02tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="03" column="avg_03tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="04" column="avg_04tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="05" column="avg_05tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="06" column="avg_06tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="07" column="avg_07tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="08" column="avg_08tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="09" column="avg_09tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="10" column="avg_10tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="11" column="avg_11tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="12" column="avg_12tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="13" column="avg_13tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="14" column="avg_14tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="15" column="avg_15tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="16" column="avg_16tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="17" column="avg_17tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="18" column="avg_18tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="19" column="avg_19tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="20" column="avg_20tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="21" column="avg_21tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="22" column="avg_22tmst" aggregator="avg" formatString="Standard"/>
+        <Measure name="23" column="avg_23tmst" aggregator="avg" formatString="Standard"/>
         <!--      <Measure name="2" column="deposit" aggregator="avg" formatString="Standard"/>
              <Measure name="3" column="mon_fee" aggregator="avg" formatString="Standard"/> -->
     </Cube>

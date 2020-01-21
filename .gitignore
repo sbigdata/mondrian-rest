@@ -5,4 +5,5 @@
 .settings
 /WebContent/
 mondrian-rest.war
+./library
 /extra-tomcat-classpath/

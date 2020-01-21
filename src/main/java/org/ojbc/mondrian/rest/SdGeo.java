@@ -1,40 +1,31 @@
 package org.ojbc.mondrian.rest;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.esri.hadoop.hive.ST_MultiPolygon;
+import com.vividsolutions.jts.geom.CoordinateArrays;
+import net.minidev.json.annotate.JsonIgnore;
+import org.hibernate.annotations.ColumnTransformer;
+import org.hibernate.annotations.Type;
+import org.hibernate.spatial.*;
+import org.postgis.Geometry;
+import org.postgis.MultiPolygon;
 
-@Table(name="sdgeo")
+import javax.persistence.*;
+/**
+ * sdgeo Table Connection
+ */
+@Table(name = "sdgeo")
 @Entity
-public class SdGeo{
+public class SdGeo {
 
-    @Id
-    Integer id;
-
-    @Column(name="sd_eng_nam")
-    String sdEnglishName;
-
+    @ColumnTransformer(read="st_astext(geom)")
     String geom;
 
-    @Column(name="sd_kor_nam")
-    String sdKorName;
+    @Column(name = "NAME")
+    String name;
 
-    public String getSdEnglishName() {
-        return sdEnglishName;
-    }
-
-    public void setSdEnglishName(String sdEnglishName) {
-        this.sdEnglishName = sdEnglishName;
-    }
-
-    public String getSdKorName() {
-        return sdKorName;
-    }
-
-    public void setSdKorName(String sdKorName) {
-        this.sdKorName = sdKorName;
-    }
+    @Id
+    @Column(name = "sdcode")
+    String sdCode;
 
     public String getGeom() {
         return geom;
@@ -43,4 +34,28 @@ public class SdGeo{
     public void setGeom(String geom) {
         this.geom = geom;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSdCode() {
+        return sdCode;
+    }
+
+    @JsonIgnore
+    public void setSdCode(String sdCode) {
+        this.sdCode = sdCode;
+    }
+    //    public String getSdCode() {
+//        return sdCode;
+//    }
+//
+//    public void setSdCode(String sdCode) {
+//        this.sdCode = sdCode;
+//    }
 }

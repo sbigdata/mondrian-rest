@@ -47,8 +47,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * A factory object that creates olap4j connection objects from json specifications that it finds on the classpath.  Connections are instantiated lazily...that is, no
- * actual connection is made to the underlying relational database until getOlap4jConnection() is called.
+ * get Mondrian Connection from mondrian_connection.json
  */
 public final class MondrianConnectionFactory {
 
